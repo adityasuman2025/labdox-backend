@@ -64,7 +64,7 @@ authRouter.get("/logout", apiHandler(async (req, res) => {
     return send200(res, "logged out successfully");
 }));
 
-authRouter.post("/google", apiHandler(async (req, res) => {
+authRouter.post("/user/google", apiHandler(async (req, res) => {
     const { idToken } = req.body;
     if (!idToken) return sendError(res, 400, "missing google token");
 
@@ -75,7 +75,7 @@ authRouter.post("/google", apiHandler(async (req, res) => {
     const { email, sub: googleId } = payload;
     if (!email) return sendError(res, 400, "email not found in google token");
 
-    let user = await UserModel.findOne({ email });
+    let user = await UserModel.findOne({ email, isAdmin: false });
     if (!user) {
         user = new UserModel({ email, authMethod: AUTH_METHOD_GOOGLE, googleId });
         await user.save();
@@ -90,6 +90,26 @@ authRouter.post("/google", apiHandler(async (req, res) => {
         email: user.email, id: user._id,
         isWaitlisted: waitlistData ? true : false, waitlistData
     });
+}));
+
+authRouter.post("/admin/google", apiHandler(async (req, res) => {
+    const { idToken } = req.body;
+    if (!idToken) return sendError(res, 400, "missing google token");
+
+    const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
+    if (!response.ok) return sendError(res, 401, "invalid google token");
+
+    const payload = await response.json();
+    const { email } = payload;
+    if (!email) return sendError(res, 400, "email not found in google token");
+
+    const user = await UserModel.findOne({ email, isAdmin: true });
+    if (!user) return sendError(res, 400, "not a admin")
+
+    const jwtToken = await user.createJWT();
+    setCookie(res, ADMIN_AUTH_TOKEN_KEY, jwtToken, TOKEN_EXPIRY_DAYS);
+
+    return send200(res, { email: user.email, id: user._id });
 }));
 
 export default authRouter;
