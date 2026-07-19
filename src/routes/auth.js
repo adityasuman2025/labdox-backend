@@ -24,7 +24,8 @@ authRouter.post("/user/login", apiHandler(async (req, res) => {
 
             return send200(res, {
                 email: user.email, id: user._id,
-                isWaitlisted: waitlistData ? true : false, waitlistData
+                isWaitlisted: waitlistData ? true : false, waitlistData,
+                token: jwtToken
             })
         } else return sendError(res, 400, "invalid credentials");
     } else return sendError(res, 400, "invalid credentials");
@@ -52,7 +53,7 @@ authRouter.post("/admin/login", apiHandler(async (req, res) => {
             const jwtToken = await user.createJWT();
             setCookie(res, ADMIN_AUTH_TOKEN_KEY, jwtToken, TOKEN_EXPIRY_DAYS);
 
-            return send200(res, { email: user.email, id: user._id })
+            return send200(res, { email: user.email, id: user._id, token: jwtToken })
         } else return sendError(res, 400, "invalid credentials");
     } else return sendError(res, 400, "invalid credentials");
 }));
@@ -88,7 +89,8 @@ authRouter.post("/user/google", apiHandler(async (req, res) => {
 
     return send200(res, {
         email: user.email, id: user._id,
-        isWaitlisted: waitlistData ? true : false, waitlistData
+        isWaitlisted: waitlistData ? true : false, waitlistData,
+        token: jwtToken
     });
 }));
 
@@ -109,7 +111,7 @@ authRouter.post("/admin/google", apiHandler(async (req, res) => {
     const jwtToken = await user.createJWT();
     setCookie(res, ADMIN_AUTH_TOKEN_KEY, jwtToken, TOKEN_EXPIRY_DAYS);
 
-    return send200(res, { email: user.email, id: user._id });
+    return send200(res, { email: user.email, id: user._id, token: jwtToken });
 }));
 
 export default authRouter;
