@@ -34,6 +34,7 @@ authRouter.post("/user/login", apiHandler(async (req, res) => {
 authRouter.post("/user/signup", apiHandler(async (req, res) => {
     const { email, password } = req.body;
     if (!email?.trim() || !password?.trim() || !validator.isEmail(email)) return sendError(res, 400, "missing email or password");
+    if (password.length < 4) return sendError(res, 400, "password must be greater than 4 characters");
 
     const hassedPassword = await getHashedPassword(password);
     const user = new UserModel({ email, password: hassedPassword, authMethod: AUTH_METHOD_EMAIL });
