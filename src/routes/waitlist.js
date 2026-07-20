@@ -48,7 +48,7 @@ waitlistRouter.post("/", userAuth, apiHandler(async (req, res) => {
     waitlist.emailValidationStatus = await verifyEmailReal(userEmail);
     await waitlist.save();
 
-    send200(res, "waitlisted");
+    send200(res, waitlist);
 }));
 
 export default waitlistRouter;
