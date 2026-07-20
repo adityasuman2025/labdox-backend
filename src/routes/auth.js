@@ -39,7 +39,16 @@ authRouter.post("/user/signup", apiHandler(async (req, res) => {
     const user = new UserModel({ email, password: hassedPassword, authMethod: AUTH_METHOD_EMAIL });
     await user.save();
 
-    return send200(res, "new user added");
+    const jwtToken = await user.createJWT();
+    setCookie(res, AUTH_TOKEN_KEY, jwtToken, TOKEN_EXPIRY_DAYS);
+
+    return send200(res, {
+        email: user.email,
+        id: user._id,
+        isWaitlisted: false,
+        waitlistData: null,
+        token: jwtToken
+    });
 }));
 
 authRouter.post("/admin/login", apiHandler(async (req, res) => {
