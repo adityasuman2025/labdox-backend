@@ -38,7 +38,7 @@ waitlistRouter.post("/", userAuth, apiHandler(async (req, res) => {
     const useCase = (req.body.useCase || "").trim();
 
     if (!fullName || !phoneNumber || !interestReason || !useCase) return sendError(res, 400, "some fields data are missing");
-    if (!userId || !userEmail) return sendError(res, 403, "un-authorised");
+    if (!userId || !userEmail) return sendError(res, 400, "missing user details");
 
     const waitlist = new WaitlistModel({ userId, fullName, phoneNumber, interestReason, useCase });
     await waitlist.save();

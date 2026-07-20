@@ -14,8 +14,8 @@ export const TOKEN_EXPIRY_DAYS = 7;
 export const WELCOME_MSG = "Welcome to api server";
 export const ALLOWED_ORIGINS = ["http://localhost:5173", "http://localhost:3000", "https://labdox.adityas.site", "https://lab-be.adityas.site"];
 
-export const GENERAL_ERROR = "Semething went wrong";
-export const NOT_FOUND_ERROR = "Route not found";
+export const GENERAL_ERROR = "something went wrong";
+export const NOT_FOUND_ERROR = "route not found";
 
 
 export const AUTH_METHOD_EMAIL = "email";

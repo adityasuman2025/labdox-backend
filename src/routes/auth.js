@@ -13,7 +13,7 @@ authRouter.post("/user/login", apiHandler(async (req, res) => {
     const { email, password } = req.body;
     if (!email?.trim() || !password?.trim() || !validator.isEmail(email)) return sendError(res, 400, "missing email or password");
 
-    const user = await UserModel.findOne({ email, isAdmin: false });
+    const user = await UserModel.findOne({ email, isAdmin: false, authMethod: AUTH_METHOD_EMAIL });
     if (user) {
         const isPasswordValid = await user.validatePassword(password);
         if (isPasswordValid) {
@@ -46,7 +46,7 @@ authRouter.post("/admin/login", apiHandler(async (req, res) => {
     const { email, password } = req.body;
     if (!email?.trim() || !password?.trim() || !validator.isEmail(email)) return sendError(res, 400, "missing email or password");
 
-    const user = await UserModel.findOne({ email, isAdmin: true });
+    const user = await UserModel.findOne({ email, isAdmin: true, authMethod: AUTH_METHOD_EMAIL });
     if (user) {
         const isPasswordValid = await user.validatePassword(password);
         if (isPasswordValid) {

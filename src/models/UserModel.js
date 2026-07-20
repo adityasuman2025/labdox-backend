@@ -7,13 +7,13 @@ import { AUTH_METHOD_EMAIL, AUTH_METHOD_GOOGLE, AUTH_METHODS, JWT_SECRET_KEY, TO
 const UserSchema = new Schema({
     email: {
         type: String,
-        required: [true, "Email is required"],
-        unique: [true, "Email is already taken"],
+        required: [true, "email is required"],
+        unique: [true, "email is already taken"],
         lowercase: true,
         trim: true,
         index: true,
         validate: function (value) {
-            if (!validator.isEmail(value)) throw new Error("Not a valid email id")
+            if (!validator.isEmail(value)) throw new Error("not a valid email id")
         }
     },
     password: {
@@ -24,7 +24,7 @@ const UserSchema = new Schema({
     },
     authMethod: {
         type: String,
-        required: [true, "Auth method is required"],
+        required: [true, "auth method is required"],
         enum: AUTH_METHODS,
     },
     isAdmin: {
