@@ -4,7 +4,10 @@ import UserModel from "../models/UserModel.js";
 import { apiHandler, sendError } from "../utils/response.js";
 
 export const userAuth = apiHandler(async (req, res, next) => {
-    const token = (req.cookies?.[AUTH_TOKEN_KEY] || "").trim();
+    let token = (req.cookies?.[AUTH_TOKEN_KEY] || "").trim();
+    if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+        token = req.headers.authorization.split(" ")[1];
+    }
     if (!token) return sendError(res, 401, "un-authorized");
 
     const { _id } = jwt.verify(token, JWT_SECRET_KEY) || {};
@@ -18,7 +21,10 @@ export const userAuth = apiHandler(async (req, res, next) => {
 });
 
 export const adminAuth = apiHandler(async (req, res, next) => {
-    const adminToken = (req.cookies?.[ADMIN_AUTH_TOKEN_KEY] || "").trim();
+    let adminToken = (req.cookies?.[ADMIN_AUTH_TOKEN_KEY] || "").trim();
+    if (!adminToken && req.headers.authorization?.startsWith("Bearer ")) {
+        adminToken = req.headers.authorization.split(" ")[1];
+    }
     if (!adminToken) return sendError(res, 401, "un-authorized");
 
     const { _id } = jwt.verify(adminToken, JWT_SECRET_KEY) || {};
