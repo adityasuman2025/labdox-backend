@@ -24,7 +24,8 @@ export async function verifyEmailReal(email) {
 export async function verifyPhoneReal(phoneNumber) {
     if (!validator.isMobilePhone(phoneNumber, "en-IN")) return STATUS_INVALID;
 
-    const url = `${ABSTRACT_PHONE_API_URL}&phone=${phoneNumber}`;
+    const number = `+91${phoneNumber.trim()}`;
+    const url = `${ABSTRACT_PHONE_API_URL}&phone=${encodeURIComponent(number)}`;
 
     try {
         const res = await fetch(url);
